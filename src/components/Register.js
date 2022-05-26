@@ -24,7 +24,6 @@ function Register () {
             alert("Usuario cadastrado com sucesso")
             navigate("/");
         });
-
         promise.catch(err => {
             setDisabled(false)
             alert(`${err.response.data.message}`)
@@ -79,7 +78,6 @@ function Register () {
         )
     }
 
-
 const formRegister = buildRegistrationForm();
 
     return (
@@ -116,7 +114,6 @@ const RegisterStyle = styled.div`
         text-decoration-line: underline;
         color: #52B6FF;
     }
-
 `;
 
 const FormRegisterStyle = styled.form`
@@ -172,8 +169,6 @@ const FormRegisterStyle = styled.form`
         color: red;
         height: 1000px;
     }
-
-
 `;
 
 const LinkStyle = styled(Link)`
