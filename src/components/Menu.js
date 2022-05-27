@@ -10,58 +10,35 @@ import AnimatedProgressProvider from "./AnimatedProgressProvider";
 
 function Menu () {
 
-    function Example(props) {
-        return (
-          <div style={{ marginBottom: 80 }}>
-            <hr style={{ border: "2px solid #ddd" }} />
-            <div style={{ marginTop: 30, display: "flex" }}>
-              <div style={{ width: "300px", paddingRight: 30 }}>{props.children}</div>
-              <div style={{ width: "700px" }}>
-                <h3 className="h5">{props.label}</h3>
-                <p>{props.description}</p>
-              </div>
-            </div>
-          </div>
-        );
-      }
+    function routsToday () {
+        alert("aa routaaaaaaaaa")
+    }
 
-    let percentage = 0.5;
+    let percentage = 60;
     return (
         <>
             <MenuStyle>
-                <LinkStyle to={"/"} ><p>Hábitos</p></LinkStyle>
+                <div className="organizate">
+                    <LinkStyle to={"/"} ><p className="firstChild">Hábitos</p></LinkStyle>
+                    <ProgressbarStyle >
+                        <Link to={"/"}>
+                            <CircularProgressbar
+                                value={percentage}
+                                text={`Hoje`}
+                                background
+                                backgroundPadding={6}
+                                styles={buildStyles({
+                                backgroundColor: "#52B6FF",
+                                textColor: "#fff",
+                                pathColor: "#fff",
+                                trailColor: "transparent"
+                                })}
+                            />
+                        </Link>
 
-                <div style={{ padding: "40px 40px 40px 40px", width: "200px", height: "200px", color: "red" }}>
-                    
-                        <CircularProgressbar value={percentage} text={`${percentage}%`} />
-                  
+                    </ProgressbarStyle>
+                    <LinkStyle to={"/"} ><p className="secondChild">Histórico</p></LinkStyle>
                 </div>
-
-
-
-             {/*  <AnimatedProgressProvider
-                    valueStart={0}
-                    valueEnd={66}
-                    duration={1.4}
-                    easingFunction={easeQuadInOut}
-                    repeat
-                >
-                    {value => {
-                    const roundedValue = Math.round(value);
-                    return (
-                        <CircularProgressbar
-                        value={value}
-                        text={`${roundedValue}%`}
-                        /* This is important to include, because if you're fully managing the
-                    animation yourself, you'll want to disable the CSS animation. tagcoment(* /)
-                        styles={buildStyles({ pathTransition: "none" })}
-                        />
-                    );
-                    }}
-                </AnimatedProgressProvider>*/} 
-
-
-                <LinkStyle to={"/"} ><p>Histórico</p></LinkStyle>
             </MenuStyle>
         </>
     )
@@ -72,15 +49,23 @@ function Menu () {
 const MenuStyle = styled.div`
     width: 100%;
     height: 70px;
-    position: absolute;
+    position: fixed;
     left: 0px;
     bottom: 0px;
     background-color: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
 
-`
+    .organizate {
+        width: 100%;
+        height: 70px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: relative;
+
+    }
+
+`;
+
 const LinkStyle = styled(Link)`
     text-decoration: none;
     cursor: pointer;
@@ -100,5 +85,22 @@ const LinkStyle = styled(Link)`
 
         color: #52B6FF;
     }
+    .firstChild {
+        margin-right: 100px;
+    }
+    >:first-child {
+        
+    }
+`;
+
+const ProgressbarStyle = styled.div`
+    width: 90px;
+    height: 90px;
+    position: absolute;
+    bottom: 10px;
+
+
+
+    
 `;
 export default Menu;

@@ -8,7 +8,7 @@ import Menu from "./Menu";
 function Habits () {
     return (
         <>
-             <Navbar /> 
+              <Navbar /> 
             <HabitsStyle>
                 <div className="myHabits" >
                     <p>Meus Hábitos </p>
@@ -33,11 +33,12 @@ function Habits () {
 }
 
 const HabitsStyle = styled.div`
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #F2F2F2;
+    margin-top: 70px;
 
     .myHabits {
         display: flex;
