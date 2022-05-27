@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios"
-import { Audio, TailSpin } from "react-loader-spinner"
+import { ThreeDots } from "react-loader-spinner"
 
 function Register () {
     const navigate = useNavigate();
@@ -73,7 +73,7 @@ function Register () {
                     onChange={e => setDataRegister({...dataRegister, image: e.target.value})}
                     disabled={disabled}
                 />
-                <button disabled={disabled}>{!disabled ? <p>Cadastrar</p> : <TailSpin color="#FFFFFF" height="40px"/>}</button>
+                <button disabled={disabled}>{!disabled ? <p>Cadastrar</p> : <ThreeDots color="#FFFFFF" height="40px"/>}</button>
             </>
         )
     }
@@ -152,6 +152,7 @@ const FormRegisterStyle = styled.form`
         justify-content: center;
         align-items: center;
         margin-bottom: 25px;
+        cursor: pointer;
     }
 
     button p {

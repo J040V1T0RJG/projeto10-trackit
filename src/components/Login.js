@@ -2,13 +2,16 @@ import styled, { StyledComponent } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios";
-import { TailSpin } from "react-loader-spinner"
+import { ThreeDots } from "react-loader-spinner"
+import { useContext } from "react";
+import UserContext from "./UserContext";
 
 
 function Login () {
     const navigate = useNavigate();
-    const [dataLogin, setDataLogin] = useState({email: "", password: ""})
-    const [disabled, setDisabled] = useState(false)
+    const [dataLogin, setDataLogin] = useState({email: "", password: ""});
+    const [disabled, setDisabled] = useState(false);
+    const { loginPromiseData , setLoginPromiseData } = useContext(UserContext);
 
     function sendLogin (e) {
         e.preventDefault();
@@ -20,7 +23,8 @@ function Login () {
             password: dataLogin.password
         });
         promise.then(response => {
-            navigate("/hoje")
+            setLoginPromiseData({...loginPromiseData, response})
+            navigate("/habitos")
         });
         promise.catch(err => {
             setDisabled(false)
@@ -51,7 +55,7 @@ function Login () {
                         onChange={e => setDataLogin({...dataLogin, password: e.target.value})}
                         disabled={disabled}
                     />
-                    <button>{!disabled ? <p>Entrar</p> : <TailSpin color="#FFFFFF" height="40px"/>}</button>
+                    <button>{!disabled ? <p>Entrar</p> : <ThreeDots color="#FFFFFF" height="40px"/>}</button>
             </>
         )
     }
@@ -91,6 +95,7 @@ const LoginStyle = styled.div`
         justify-content: center;
         align-items: center;
         margin-bottom: 25px;
+        cursor: pointer;
     }
 
     button p {
