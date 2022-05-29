@@ -30,7 +30,7 @@ function Register () {
         });
     }
 
-    function buildRegistrationForm () {
+    function BuildRegistrationForm () {
         return (
             <>
                 <label htmlFor="email" />
@@ -78,7 +78,7 @@ function Register () {
         )
     }
 
-const formRegister = buildRegistrationForm();
+const formRegister = BuildRegistrationForm();
 
     return (
         <>

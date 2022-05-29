@@ -37,7 +37,7 @@ function Menu () {
                         </Link>
 
                     </ProgressbarStyle>
-                    <LinkStyle to={"/"} ><p className="secondChild">Histórico</p></LinkStyle>
+                    <LinkStyle to={"/historico"} ><p className="secondChild">Histórico</p></LinkStyle>
                 </div>
             </MenuStyle>
         </>

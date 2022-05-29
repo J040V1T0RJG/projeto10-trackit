@@ -6,6 +6,7 @@ import Register from "./Register";
 import Today from "./Today";
 import Habits from "./Habits";
 import UserContext from "./UserContext";
+import Historic from "./Historic";
 
 
 
@@ -21,7 +22,7 @@ function App () {
                         <Route path="/cadastro" element={<Register />} />
                         <Route path="/habitos" element={<Habits />} />
                         <Route path="/hoje" element={<Today />} />
-                        <Route path="/historico"/>
+                        <Route path="/historico" element={<Historic />}/>
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>
