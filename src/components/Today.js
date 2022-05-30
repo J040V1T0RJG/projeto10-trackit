@@ -11,78 +11,129 @@ import Menu from "./Menu";
 
 function Today () {
     dayjs.locale('pt-br');
-    let nameTitle;
-    const { loginPromiseData } = useContext(UserContext);
+
+    const { loginPromiseData, totalDone, setTotalDone,  quantityDone, setQuantityDone } = useContext(UserContext);
     const token = {
         headers: {
             "Authorization": `Bearer ${loginPromiseData.response.data.token}`
         }
     };
     const [dataTodays, setDataTodays] = useState([])
-
     const URLtoday = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today"
 
     useEffect(() => {
         const promise = axios.get(URLtoday, token)
         promise.then(response => {
             console.log("response.data", response.data)
-            setDataTodays([...dataTodays, response.data])
+            setDataTodays( response.data)
         })
     },[]);
 
+    function RenderBoxTodayList () {
+
+        setTotalDone(dataTodays.length)
+        console.log("passo1", dataTodays)
+        console.log("passo2", dataTodays[0])
+
+            return (
+                <>
+                    {dataTodays.map((dataToday, index) => (
+                        <BuildBoxToday key={index} dados={dataToday}/>
+                    ))}
+                </>
+            )
+    } 
+
     function BuildBoxToday (props) {
 
-        function test () {
+        const [greencheck, setGreenCheck] = useState("")
+        const [greenCurrent, setGreenCurrent] = useState("")
+        const [greenRecord, setGreenRecord] = useState("")
+    //    const [truff, setTruff] = useState(false)
 
+/*
+       if((props !== undefined && props.dados.currentSequence) == (props !== undefined && props.dados.highestSequence) && (props !== undefined && props.dados.highestSequence) > 0) {
+            setGreenRecord("greenRecord")
         }
-        console.log("nametitle", props.title)
+*/
+/*
+    const truf = ((props !== undefined && props.dados.done ) == true);
+    const [truff, setTruff] = useState(truf)
+     if (truff) {
+            setQuantityDone(quantityDone + 1)
+            setTruff(false)
+     }  
+*/
+        function temporaria () {
+            if(greencheck === "green"){
+                setGreenCheck("")
+                setGreenCurrent("")
+            }
+            else {
+                setGreenCheck("green") 
+                setGreenCurrent("greenCurrent")
+            } 
+        }
 
-        return (
-            <>
-                <BoxTodayStyle>
-                    <div className="organizate">
-                        <p>catapimbas</p>
-                        <div className="current">
-                            <p>sequencia atual:</p>
-                            <p>3 dias</p>
-                        </div>
-                        <div className="record">
-                            <p>seu record:</p>
-                            <p>5 dias</p>
-                        </div>
+        function toggleSelect () {
+            temporaria()
 
-                    </div>
-                    <div className="check" onClick={() => test()}>
-                        <img src="img/Vector.png" alt="Check" />
-                    </div>
-                </BoxTodayStyle>          
-            </>
-        )
+            if (greencheck === "green") {
+                setQuantityDone(quantityDone - 1)
+
+                const URLunchecked = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props !== undefined && props.dados.id}/uncheck`
+                const promiseUnchecked = axios.post(URLunchecked, {}, token)
+                promiseUnchecked.then(alert("desmarquei"))
+                promiseUnchecked.catch(err => {
+                    alert(err.response.data.message)
+                })
+            }
+            else {
+                setTruff(true)
+                setQuantityDone(quantityDone + 1)
+
+                const URLchecked = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props !== undefined && props.dados.id}/check`
+                const promiseChecked = axios.post(URLchecked, {}, token);
+                promiseChecked.then(alert("marquei"))
+                promiseChecked.catch(err => {
+                    alert(err.response.data.message)
+                })  
+            } 
+        }
+
+            return (
+                <>
+                    <BoxTodayStyle>
+                        <div className="organizate">
+                            <p>{props !== undefined && props.dados.name}</p> 
+                            <div className="current">
+                                <p>sequencia atual:</p>
+                                <p className={greenCurrent}>{ props !== undefined && props.dados.currentSequence} dias</p>
+                            </div>
+                            <div className="record">
+                                <p>seu record:</p>
+                                <p className={greenRecord}>{props !== undefined && props.dados.highestSequence} dias</p>
+                            </div>
+    
+                        </div>
+                        <div className={`check ${greencheck}`} onClick={() => toggleSelect()}>
+                            <img src="img/Vector.png" alt="Check" />
+                        </div>
+                    </BoxTodayStyle>          
+                </>
+            )
     }
 
-
-
-
-
-
-
-    const variavelporcentagem = 0;
+    let variavelporcentagem = ((quantityDone * 100)/totalDone).toFixed(1)
     const formBoxToday = BuildBoxToday()
     return (
         <>
             <Navbar />
             <TodayStyle>
                 <p>{dayjs().format("dddd")}, {dayjs().format("DD/MM")} </p>
-                {variavelporcentagem > 0 ? <p className="percentageVar">{variavelporcentagem} dos habitos concluidos</p> : <p className="noPercentage">Nenhum habito concluido</p> }
+                {variavelporcentagem > 0 ? <p className="percentageVar">{variavelporcentagem}% dos habitos concluidos</p> : <p className="noPercentage">Nenhum habito concluido</p> }
                 {console.log("dataTodays dado central",dataTodays)}
-           {/**      {dataTodays[0].map((dataToday, index) => (
-                    nameTitle = dataTodays[0],
-                    <BuildBoxToday key={index} title={nameTitle}/>
-                ))} */}
-
-
-
-
+                <RenderBoxTodayList />
             </TodayStyle>
             <Menu /> 
         </>
@@ -90,11 +141,11 @@ function Today () {
 }
 
 const TodayStyle = styled.div`
-    margin-top: 70px;
+    margin-top: 98px;
     padding-left: 16px;
 
     >:first-child {
-        margin-top: 28px;
+       
         height: 29px;
         font-family: 'Lexend Deca';
         font-style: normal;
@@ -102,11 +153,12 @@ const TodayStyle = styled.div`
         font-size: 22.976px;
         line-height: 29px;
         color: #126BA5;
-        
+    }
+    >:last-child {
+        margin-bottom: 110px;
     }
 
     .percentageVar {
-        width: 238px;
         height: 22px;
         font-family: 'Lexend Deca';
         font-style: normal;
@@ -136,6 +188,7 @@ const BoxTodayStyle = styled.div`
     border-radius: 5px;
     position: relative;
     padding-left: 15px;
+    margin-bottom: 10px;
 
     .check {
         width: 69px;
@@ -149,6 +202,9 @@ const BoxTodayStyle = styled.div`
         position: absolute;
         top: 13px;
         right: 13px;
+    }
+    .check.green {
+        background-color: #8FC549;
     }
 
     .check img {
@@ -191,12 +247,20 @@ const BoxTodayStyle = styled.div`
         margin-right: 5px;
     }
 
+    .current p.greenCurrent {
+        color: #8FC549;
+    }
+
     .record {
         display: flex;
     }
 
     .record :first-child {
         margin-right: 5px;
+    }
+
+    .record p.greenRecord {
+        color: #8FC549;
     }
 `;
 

@@ -24,7 +24,7 @@ function Login () {
         });
         promise.then(response => {
             setLoginPromiseData({...loginPromiseData, response})
-            navigate("/habitos")
+            navigate("/hoje")
         });
         promise.catch(err => {
             setDisabled(false)

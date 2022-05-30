@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useContext } from "react"
+import UserContext from "./UserContext";
 
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -9,12 +11,10 @@ import 'react-circular-progressbar/dist/styles.css';
 
 
 function Menu () {
+    const { quantityDone, totalDone } = useContext(UserContext)
 
-    function routsToday () {
-        alert("aa routaaaaaaaaa")
-    }
-
-    let percentage = 60;
+    let percentage = quantityDone
+    console.log(quantityDone)
     return (
         <>
             <MenuStyle>
@@ -24,6 +24,8 @@ function Menu () {
                         <Link to={"/hoje"}>
                             <CircularProgressbar
                                 value={percentage}
+                                minValue={0}
+                                maxValue={totalDone}
                                 text={`Hoje`}
                                 background
                                 backgroundPadding={6}
