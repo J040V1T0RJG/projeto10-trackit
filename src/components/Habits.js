@@ -1,24 +1,19 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect } from "react";
-import UserContext from "./UserContext";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner"
 
+import UserContext from "./UserContext";
 import Navbar from "./Navbar";
 import Menu from "./Menu";
 
-
-
 function Habits () {
 
-    const [dayColor, setDayColor] = useState("");
     const [disabled, setDisabled] = useState(false);
     const [pluxButton, setPluxButton] = useState(false);;
-    const [dataHabits, setDataHabits] = useState({name: "", days: []}); //mudar nome e excluir days
-
-    let selectedDays = [];
-    let nameTitle;
-    const days = ["D", "S", "T", "Q", "Q", "S", "S"];
+    const [dataHabits, setDataHabits] = useState({name: ""}); 
+    const [dataHabitsList, setDataHabitsList] = useState([]);
+    const [reload, setReload] = useState(true);
 
     const { loginPromiseData } = useContext(UserContext);
     const token = {
@@ -26,36 +21,18 @@ function Habits () {
             "Authorization": `Bearer ${loginPromiseData.response.data.token}`
         }
     };
-
-    const [dataHabitsList, setDataHabitsList] = useState([]);
-   // const [call, setCall] = useState(false)
-   //let call = 1;
-
-    
+    const days = ["D", "S", "T", "Q", "Q", "S", "S"];
     const URLreceive = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
+    let selectedDays = [];
+    let nameTitle;
 
-    
-   
-
-        useEffect(() => {
-            console.log("estou usando useEffect")
-            const receive = axios.get(URLreceive, token);
-            receive.then(response => {
-                setDataHabitsList([...dataHabitsList, response.data])
-                console.log("response axios get",response.data)
-            })
-            
-        },[]);
-    
-
-
- 
-
-
-
-
-
-
+    if (reload) {
+        const receive = axios.get(URLreceive, token);
+        receive.then(response => {
+            setDataHabitsList(response.data)
+            setReload(false)
+        })
+    }
 
     function displayForm () {
         if (pluxButton) {
@@ -70,7 +47,8 @@ function Habits () {
         setPluxButton(false);
     };
 
-    function sendNewHabit () {
+    function sendNewHabit (e) {
+        e.preventDefault();
         setDisabled(true)
   
         const URlsend = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
@@ -80,12 +58,10 @@ function Habits () {
         }, token);
 
         promise.then(response => {
-            console.log("entrou no then de sendNewHabit");
-            console.log("response", response);
-            setDisabled(false);
             setDataHabits({...dataHabits, name: ""});
+            setDisabled(false);
             setPluxButton(false);
-            //Habits();
+            setReload(true)
         });
 
         promise.catch(err => {
@@ -95,18 +71,11 @@ function Habits () {
 
     };
 
-
-
-
-
-
-
-
     function BuildHabitCreationBox () {
         return (
             <>
                 <HabitCreationBoxStyle>
-                    <FormCreationHabitsStyle>
+                    <FormCreationHabitsStyle onSubmit={sendNewHabit}>
                         <input 
                             type="text"
                             placeholder="nome do hábito"
@@ -122,7 +91,7 @@ function Habits () {
                         </div>
                         <div className="button">
                             <div className="cancelButton" onClick={() => cancelHabitsForm()}><p>Cancelar</p></div>
-                            <button className="saveButton" disabled={disabled} onClick={() => sendNewHabit()}>{!disabled ? <p>Salvar</p> : <ThreeDots color="#FFFFFF" width="60px" height="30px"/>}</button>
+                            <button type="submit" className="saveButton" disabled={disabled} >{!disabled ? <p>Salvar</p> : <ThreeDots color="#FFFFFF" width="60px" height="30px"/>}</button>
                         </div>
                     </FormCreationHabitsStyle>
                 </HabitCreationBoxStyle>
@@ -132,7 +101,7 @@ function Habits () {
 
     function RenderDays (props) {
         const { index  } = props
-        const dayId = index + 1
+        const dayId = index 
         const [boxColor, setBoxColor] = useState("");
 
         function toggleSelectDay () {
@@ -145,54 +114,37 @@ function Habits () {
                 setBoxColor("selected");
                 selectedDays.push(dayId);
             }
-        }
-
+        };
         return (<><button className={boxColor} disabled={disabled} type="button" onClick={() => toggleSelectDay()}><p>{props.day}</p></button></>)
     };
 
     function BuildHabitLists () {
         return (
             <>
-                {console.log("DATAHABITSLIST antes do map", dataHabitsList)}
-                {console.log("passo1", dataHabitsList[0])}
-                {console.log("passos2",dataHabitsList[0][0])}
-                {console.log("passo3", dataHabitsList[0][0].name)}
-                {console.log("passo4", dataHabitsList[0][0].days)}
-                {console.log("passo5", dataHabitsList[0][0].days[5])}
-                {dataHabitsList[0].map((dataHabitList, index,) => (
-                    nameTitle = dataHabitsList[0][index].name,
-                    <BuildHabitList key={index} namee={`${nameTitle}`} numberDays={dataHabitsList[0][index].days} id={dataHabitsList[0][index].id}/>
+                {dataHabitsList.map((dataHabitList, index,) => (
+                    nameTitle = dataHabitsList[index].name,
+                    <BuildHabitList key={index} namee={`${nameTitle}`} numberDays={dataHabitsList[index].days} id={dataHabitsList[index].id}/>
                 ))}
             </>
         )
     };
 
     function BuildHabitList (props) {
-        
 
         function EraseHabit () {
             const confirmErase = window.confirm("Gostaria realmente de apagar?")
 
-            if(confirmErase == true) {
+            if(confirmErase === true) {
                 const URLdelete = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props.id}`
                 const promise = axios.delete(URLdelete, token)
                 promise.then(response => {
-                    //setCall(true)
-                    //call();
-                    
-                    console.log("apagou")
+                    setReload(true)
                 })
             }
             else {
                 alert("exclusão cancelada")
             }
-
-        }
-
-
-
-
-
+        };
 
         return (
             <>
@@ -215,7 +167,7 @@ function Habits () {
         const { indexDays, numberDays } = props
 
         for (let i = 0; i < 7; i++) {
-                if (indexDays + 1 == numberDays[i]) {
+                if (indexDays === numberDays[i]) {
 
                     return (
                         <>
@@ -249,18 +201,10 @@ function Habits () {
                     <p>Meus Hábitos </p>
                     <div className="button" onClick={() => displayForm()} ><p>+</p></div>
                 </div>
-
                 {pluxButton ? <BuildHabitCreationBox /> : <></>}
-
                 {dataHabitsList.length < 1 ? <BuildNoHabit /> : <BuildHabitLists />}
-                
-
-
-
-
             </HabitsStyle>
-
-             <Menu /> 
+            <Menu /> 
         </>
     )
 };
@@ -282,8 +226,8 @@ const HabitsStyle = styled.div`
         position: relative;
         width: 100vw;
         margin-bottom: 80px;
-
     }
+
     .myHabits > p {
         height: 29px;
         left: 18px;
@@ -295,8 +239,8 @@ const HabitsStyle = styled.div`
         line-height: 29px;
         color: #126BA5;
         position: absolute;
-        
     }
+
     .myHabits .button {
         width: 40px;
         height: 35px;
@@ -309,6 +253,7 @@ const HabitsStyle = styled.div`
         align-items: center;
         position: absolute;
     }
+
     .myHabits .button > p {
         width: 16px;
         height: 34px;
@@ -419,6 +364,7 @@ const FormCreationHabitsStyle = styled.form`
         text-align: center;
         color: #52B6FF;
     }
+
     .button .saveButton {
         width: 84px;
         height: 35px;
@@ -431,6 +377,7 @@ const FormCreationHabitsStyle = styled.form`
         align-items: center;
         border: none;
     }
+
     .button .saveButton p {
         width: 50px;
         height: 20px;
@@ -444,9 +391,11 @@ const FormCreationHabitsStyle = styled.form`
         text-align: center;
         color: #FFFFFF;
     }
+
     .organizate button.selected {
         background-color: #CFCFCF;
     }
+
     .organizate button.selected p{
         color: #FFFFFF;
     }
@@ -454,6 +403,7 @@ const FormCreationHabitsStyle = styled.form`
 
 const NoHabitStyle = styled.div`
     margin-top: 28px;
+
     p {
         width: 338px;
         height: 74px;
@@ -485,7 +435,6 @@ const HabitListsStyle = styled.div`
         margin-bottom: 10px;
         margin-top: 12px;
         align-items: center;
-        
     }
 
     .organizate1 p {
@@ -499,6 +448,7 @@ const HabitListsStyle = styled.div`
         line-height: 25px;
         color: #666666;
     }
+
     .organizate1 ion-icon {
         position: absolute;
         right: 10px;
@@ -537,9 +487,11 @@ const HabitListsStyle = styled.div`
         line-height: 25px;
         color: #DBDBDB;
     }
+
     .organizate2 button.selected {
         background-color: #CFCFCF;
     }
+
     .organizate2 button.selected p{
         color: #FFFFFF;
     }

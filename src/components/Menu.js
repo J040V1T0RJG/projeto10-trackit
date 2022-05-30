@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
-import {easeQuadInOut} from "d3-ease"
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+
 import 'react-circular-progressbar/dist/styles.css';
 
 
 
-import AnimatedProgressProvider from "./AnimatedProgressProvider";
+
 
 function Menu () {
 
@@ -19,9 +19,9 @@ function Menu () {
         <>
             <MenuStyle>
                 <div className="organizate">
-                    <LinkStyle to={"/"} ><p className="firstChild">Hábitos</p></LinkStyle>
+                    <LinkStyle to={"/habitos"} ><p className="firstChild">Hábitos</p></LinkStyle>
                     <ProgressbarStyle >
-                        <Link to={"/"}>
+                        <Link to={"/hoje"}>
                             <CircularProgressbar
                                 value={percentage}
                                 text={`Hoje`}
@@ -35,7 +35,6 @@ function Menu () {
                                 })}
                             />
                         </Link>
-
                     </ProgressbarStyle>
                     <LinkStyle to={"/historico"} ><p className="secondChild">Histórico</p></LinkStyle>
                 </div>
